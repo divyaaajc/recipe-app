@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import './App.css';
+import Recipe from './components/Recipe'
 
 
 function App() {
   const appId = process.env.REACT_APP_APP_ID;;
   const appKey = process.env.REACT_APP_API_KEY;;
 
-  const recipes
-
+  const [recipes, setRecipes] = useState([]);
+  
   useEffect(() => {
     getRecipes();
   });
@@ -15,7 +16,7 @@ function App() {
   const getRecipes = () => {
     fetch(`https://api.edamam.com/api/recipes/v2?type=public&q=salmon&app_id=${appId}&app_key=${appKey}`)
       .then(response => response.json())
-      .then(data => console.log(data.hits));
+      .then(data => setRecipes(data.hits));
   }
 
   return (
@@ -26,6 +27,9 @@ function App() {
           Search
         </button>
       </form>
+      {recipes.map(recipe => (
+        <Recipe title={recipe.recipe.label} calories={recipe.recipe.calories} image={recipe.recipe.image}/>
+      ))}
     </div>
   );
 };
